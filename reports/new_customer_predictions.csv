@@ -1,0 +1,3 @@
+customerID,churn_probability,will_likely_churn,monthly_revenue,retention_priority_score
+9999-TEST1,0.94,True,95.5,89.8
+9999-TEST2,0.022,False,55.0,1.21
