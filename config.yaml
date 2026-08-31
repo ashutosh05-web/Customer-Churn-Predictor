@@ -1,0 +1,40 @@
+# ============================================================
+# Central config — swap in YOUR OWN dataset later by editing
+# just this file. Nothing in src/ needs to change as long as
+# your CSV has a customer id, a churn label, and a numeric
+# revenue/charge column (or you remap the names below).
+# ============================================================
+
+data:
+  raw_path: "data/raw/telco_churn.csv"     # <-- change this path when you bring your own dataset
+  processed_path: "data/processed/churn_clean.csv"
+
+  # Column mapping: point these at whatever your dataset calls them.
+  # This is the trick that makes the whole pipeline dataset-agnostic.
+  columns:
+    customer_id: "customerID"
+    target: "Churn"                # must be Yes/No or 1/0
+    revenue: "MonthlyCharges"      # used for the Revenue-at-Risk score
+    tenure: "tenure"
+
+  target_positive_label: "Yes"     # what counts as "churned" in the raw target column
+
+sql:
+  db_path: "data/processed/churn.db"
+  table_name: "customers"
+
+model:
+  test_size: 0.2
+  random_state: 42
+  use_smote: true
+  models_to_compare:
+    - logistic_regression
+    - random_forest
+    - xgboost
+  primary_metric: "f1"             # used to pick the "best" model (recall matters more than accuracy for churn)
+  output_path: "models/churn_model.pkl"
+
+business:
+  # Used to compute the "Retention Priority Score" (see src/business_metrics.py)
+  # priority_score = churn_probability * revenue * retention_offer_cost_factor
+  retention_offer_cost_factor: 1.0
